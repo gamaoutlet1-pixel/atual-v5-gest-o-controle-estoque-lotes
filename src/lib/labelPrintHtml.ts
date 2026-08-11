@@ -101,17 +101,16 @@ export function buildTemplatePrintHtml(item: PrintableLabelItem, template: Label
         ? priceDeRaw
         : `R$ ${priceDeRaw}`
       : "";
-    const dePos = template.priceDePos ?? { x: 1, y: 12 };
-    const deWidth = template.priceDeWidth ?? 18;
-    const deHeight = template.priceDeHeight ?? 12;
-    const deFont = template.fontSizePriceDe ?? 7;
+    const dePos = template.priceDePos ?? { x: 15, y: 14 };
+    const deWidth = template.priceDeWidth ?? 10;
+    const deHeight = template.priceDeHeight ?? 7;
+    const deFont = template.fontSizePriceDe ?? 5;
     const labelFont = Math.max(4, deFont - 1);
     const porFontSize = priceText.length > 8
       ? Math.max(7, template.fontSizePrice - 3)
       : priceText.length > 6
       ? Math.max(8, template.fontSizePrice - 2)
       : template.fontSizePrice;
-
 
     const deBlock = priceDeText
       ? `<div style="position:absolute;left:${dePos.x}mm;top:${dePos.y}mm;width:${deWidth}mm;height:${deHeight}mm;border:1px solid #000;padding:0.5mm;overflow:hidden;">
@@ -127,24 +126,28 @@ export function buildTemplatePrintHtml(item: PrintableLabelItem, template: Label
 <meta charset="utf-8">
 <style>
 @page {
-  size: ${template.labelWidth}mm ${template.labelHeight}mm;
+  size: ${template.labelHeight}mm ${template.labelWidth}mm;
   margin: 0;
 }
 html, body {
   margin: 0;
   padding: 0;
-  width: ${template.labelWidth}mm;
-  height: ${template.labelHeight}mm;
+  width: ${template.labelHeight}mm;
+  height: ${template.labelWidth}mm;
 }
 * { box-sizing: border-box; }
 .label-sheet {
-  position: relative;
-  width: ${template.labelWidth}mm;
-  height: ${template.labelHeight}mm;
+  position: absolute;
+  left: 0;
+  top: -${template.labelWidth}mm;
+  width: ${template.labelHeight}mm;
+  height: ${template.labelWidth}mm;
   overflow: hidden;
   font-family: Arial, sans-serif;
   background: #fff;
   color: #000;
+  transform: rotate(90deg);
+  transform-origin: top left;
 }
 </style>
 </head>
@@ -152,7 +155,7 @@ html, body {
 <div class="label-sheet">
   ${block(productText, template.productPos.x, template.productPos.y, template.productMaxWidth, template.productMaxHeight, template.fontSizeProduct, template.productAlign || "left", template.productVerticalAlign || "top", !!template.productBold, template.productMaxLines || 1, template.productOffsetY || 0)}
   ${deBlock}
-  <div style="position:absolute;left:${template.pricePos.x}mm;top:${template.pricePos.y}mm;width:${template.priceWidth}mm;height:${template.priceHeight}mm;background:#000;color:#fff;padding:1mm;overflow:hidden;">
+  <div style="position:absolute;left:${template.pricePos.x}mm;top:${template.pricePos.y}mm;width:${template.priceWidth}mm;height:${template.priceHeight}mm;background:#000;color:#fff;padding:0.5mm;overflow:hidden;">
     <div style="font-size:${labelFont}pt;line-height:1.1;">POR</div>
     <div style="font-size:${porFontSize}pt;font-weight:700;line-height:1.15;">${escapeHtml(priceText)}</div>
   </div>
