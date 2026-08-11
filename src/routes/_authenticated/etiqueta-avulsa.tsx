@@ -439,113 +439,126 @@ function LabelPreview({
       <div
         style={{
           position: "relative",
-          width: mm(template.labelWidth),
-          height: mm(template.labelHeight),
-          background: "#fff",
-          color: "#000",
-          fontFamily: "Arial, sans-serif",
-          border: "1px dashed hsl(var(--border))",
-          overflow: "hidden",
+          width: mm(template.labelHeight),
+          height: mm(template.labelWidth),
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
         }}
       >
-        {/* Product name top */}
         <div
           style={{
-            position: "absolute",
-            left: mm(1),
-            top: mm(1),
-            width: mm(38),
-            height: mm(10),
-            fontSize: `${template.fontSizeProduct * scale}pt`,
-            fontWeight: 700,
+            position: "relative",
+            width: mm(template.labelHeight),
+            height: mm(template.labelWidth),
+            background: "#fff",
+            color: "#000",
+            fontFamily: "Arial, sans-serif",
+            border: "1px dashed hsl(var(--border))",
             overflow: "hidden",
-            display: "-webkit-box",
-            WebkitLineClamp: 2,
-            WebkitBoxOrient: "vertical",
+            transform: "rotate(90deg)",
+            transformOrigin: "center center",
           }}
         >
-          {nome || template.productText || ""}
-        </div>
+          {block(
+            nome || template.productText || "",
+            template.productPos.x,
+            template.productPos.y,
+            template.productMaxWidth,
+            template.productMaxHeight,
+            template.fontSizeProduct,
+            template.productAlign,
+            template.productVerticalAlign,
+            template.productBold,
+            template.productMaxLines || 1,
+            template.productOffsetY || 0,
+          )}
 
-        {/* DE block */}
-        <div
-          style={{
-            position: "absolute",
-            left: mm(1),
-            top: mm(12),
-            width: mm(18),
-            height: mm(12),
-            border: "1px solid #000",
-            padding: mm(0.5),
-            overflow: "hidden",
-          }}
-        >
-          <div style={{ fontSize: `${4 * scale}pt`, fontWeight: 700 }}>DE</div>
+          {(precoDe || template.priceDeText) && (
+            <div
+              style={{
+                position: "absolute",
+                left: mm(template.priceDePos?.x ?? 15),
+                top: mm(template.priceDePos?.y ?? 14),
+                width: mm(template.priceDeWidth ?? 10),
+                height: mm(template.priceDeHeight ?? 7),
+                border: "1px solid #000",
+                padding: mm(0.5),
+                overflow: "hidden",
+              }}
+            >
+              <div style={{ fontSize: `${Math.max(4, (template.fontSizePriceDe ?? 5) - 1) * scale}pt`, fontWeight: 700 }}>
+                DE
+              </div>
+              <div
+                style={{
+                  fontSize: `${(template.fontSizePriceDe ?? 5) * scale}pt`,
+                  textDecoration: "line-through",
+                  color: "#555",
+                }}
+              >
+                {precoDe || template.priceDeText || "R$0,00"}
+              </div>
+            </div>
+          )}
+
           <div
             style={{
-              fontSize: `${(template.fontSizePriceDe ?? 7) * scale}pt`,
-              textDecoration: "line-through",
-              color: "#555",
+              position: "absolute",
+              left: mm(template.pricePos.x),
+              top: mm(template.pricePos.y),
+              width: mm(template.priceWidth),
+              height: mm(template.priceHeight),
+              background: "#000",
+              color: "#fff",
+              padding: mm(0.5),
+              overflow: "hidden",
             }}
           >
-            {precoDe || template.priceDeText || "R$0,00"}
+            <div style={{ fontSize: `${Math.max(4, (template.fontSizePriceDe ?? 5) - 1) * scale}pt`, fontWeight: 700 }}>
+              POR
+            </div>
+            <div
+              style={{
+                fontSize: `${template.fontSizePrice * scale}pt`,
+                fontWeight: 700,
+                lineHeight: 1.1,
+              }}
+            >
+              {preco || template.priceText || "R$0,00"}
+            </div>
           </div>
-        </div>
 
-        {/* POR block */}
-        <div
-          style={{
-            position: "absolute",
-            left: mm(20),
-            top: mm(12),
-            width: mm(19),
-            height: mm(12),
-            background: "#000",
-            color: "#fff",
-            padding: mm(0.5),
-            overflow: "hidden",
-          }}
-        >
-          <div style={{ fontSize: `${4 * scale}pt`, fontWeight: 700 }}>POR</div>
           <div
             style={{
-              fontSize: `${template.fontSizePrice * scale}pt`,
-              fontWeight: 700,
-              lineHeight: 1.1,
+              position: "absolute",
+              left: mm(template.barcodePos.x),
+              top: mm(template.barcodePos.y),
+              width: mm(template.barcodeWidth),
+              height: mm(template.barcodeHeight),
+              overflow: "hidden",
             }}
           >
-            {preco || template.priceText || "R$0,00"}
+            <LabelBarcode
+              value={sku || template.barcodeText || ""}
+              width={template.barcodeWidth * scale}
+              height={template.barcodeHeight * scale}
+            />
           </div>
-        </div>
 
-        {/* Barcode */}
-        <div
-          style={{
-            position: "absolute",
-            left: mm(1),
-            top: mm(26),
-            width: mm(38),
-            height: mm(8),
-            overflow: "hidden",
-          }}
-        >
-          <LabelBarcode value={sku || template.barcodeText || ""} width={38 * scale} height={8 * scale} />
-        </div>
-
-        {/* Code */}
-        <div
-          style={{
-            position: "absolute",
-            left: mm(1),
-            top: mm(35),
-            width: mm(38),
-            height: mm(4),
-            fontSize: `${template.fontSizeCode * scale}pt`,
-            textAlign: "center",
-            overflow: "hidden",
-          }}
-        >
-          {grade || template.codeText || ""}
+          {block(
+            grade || template.codeText || "",
+            template.codePos.x,
+            template.codePos.y,
+            template.codeWidth,
+            template.codeHeight,
+            template.fontSizeCode,
+            template.codeAlign,
+            template.codeVerticalAlign,
+            template.codeBold,
+            template.codeMaxLines || 1,
+            template.codeOffsetY || 0,
+          )}
         </div>
       </div>
     );
